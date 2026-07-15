@@ -67,6 +67,75 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for local setup and
 deployment guide (Node, MongoDB, Icecast, Liquidsoap, Nginx, SSL, firewall).
 [docs/BACKUP.md](docs/BACKUP.md) covers backups and the update procedure.
 
+## Setup
+
+### Local development
+
+See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the full walkthrough.
+Short version:
+
+```bash
+git clone <this-repo-url> radio && cd radio
+cp .env.example .env   # set at least JWT_SECRET and MONGODB_URI
+npm install
+npm --prefix web install
+mkdir -p uploads/tracks uploads/covers liquidsoap/playlists
+node scripts/seed-admin.mjs dev@example.com devpassword
+npm run dev              # terminal 1 — Express API on :4322
+npm --prefix web run dev # terminal 2 — Vite dev server on :5173
+```
+
+Icecast/Liquidsoap aren't required for day-to-day dev work — see
+docs/DEVELOPMENT.md for running the full stack locally if you want to hear
+the actual stream.
+
+### Production (Ubuntu 24.04 LTS VPS)
+
+This app is meant to be deployed standalone on a fresh Ubuntu 24.04 VPS —
+its own MongoDB, its own Node process, its own Nginx server block, its own
+Icecast/Liquidsoap instance, no Docker. Full step-by-step instructions
+(Icecast config, the Liquidsoap systemd unit, the scoped sudoers rule for
+restarts, Nginx + Certbot, UFW) are in
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). Condensed version:
+
+```bash
+# 1. Packages — Node 20, MongoDB 7, PM2, Nginx, Icecast2, Liquidsoap
+#    (exact apt commands: docs/DEPLOYMENT.md §1)
+
+# 2. Clone and configure
+cd /opt
+sudo git clone <this-repo-url> radio
+sudo chown -R $USER:$USER radio
+cd radio
+cp .env.example .env
+nano .env   # MONGODB_URI, JWT_SECRET, ICECAST_SOURCE_PASSWORD, STATION_*,
+            # LIQUIDSOAP_RESTART_ENABLED=true
+
+mkdir -p uploads/tracks uploads/covers liquidsoap/playlists
+npm install
+npm run build
+node scripts/seed-admin.mjs admin@yourdomain.com yourpassword
+
+# 3-5. Configure Icecast (/etc/icecast2/icecast.xml), the Liquidsoap
+#      systemd unit, and the sudoers rule that lets the app restart
+#      Liquidsoap — docs/DEPLOYMENT.md §3-5
+
+# 6. Run the app under PM2
+pm2 start server.js --name radio-backend
+pm2 save
+pm2 startup   # follow the printed command to enable on boot
+
+# 7-8. Nginx reverse proxy + SSL (Certbot), then lock the firewall down to
+#      Nginx only (Icecast/Node/MongoDB stay bound to 127.0.0.1) —
+#      docs/DEPLOYMENT.md §7-8
+```
+
+Sign in to the admin panel, create a playlist, upload a track, and mark it
+default — this triggers the app's first Liquidsoap config generation and
+start. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full detail
+behind every step above, and [docs/BACKUP.md](docs/BACKUP.md) for backups
+and the update procedure.
+
 ## How the Liquidsoap integration works
 
 Each enabled `Playlist` becomes a `playlist()` source in a generated
