@@ -99,7 +99,11 @@ function buildRadioLiq({ playlists, scheduleEntries, defaultPlaylistId }) {
 
   const defaultVarName = sourceVarFor(defaultPlaylistId);
 
-  lines.push('radio = switch(track_sensitive=true,');
+  // mksafe() makes the source infallible (falls back to blank() if every
+  // branch's underlying playlist somehow yields nothing) — output.icecast()
+  // requires an infallible source, and switch() alone is always typed
+  // fallible regardless of a catch-all `true` branch.
+  lines.push('radio = mksafe(switch(track_sensitive=true,');
   lines.push('  [');
   for (const entry of scheduleEntries) {
     const startTs = Math.floor(new Date(entry.startAt).getTime() / 1000);
@@ -111,7 +115,7 @@ function buildRadioLiq({ playlists, scheduleEntries, defaultPlaylistId }) {
   }
   lines.push(`    (fun () -> true, ${defaultVarName})`);
   lines.push('  ]');
-  lines.push(')');
+  lines.push('))');
   lines.push('');
 
   lines.push('output.icecast(%mp3(bitrate=128),');
