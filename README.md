@@ -44,7 +44,8 @@ src/
     authService.js         JWT sign/verify, bcrypt hash/compare, cookies
     mp3Metadata.js          Magic-byte validation + duration/tag extraction
     liquidsoapService.js    .liq/.m3u templating, regeneration, restart
-    icecastStatusService.js Icecast status-json.xsl proxy + cache
+    icecastStatusService.js Icecast status-json.xsl proxy + cache (public status)
+    systemStatusService.js  Icecast/Liquidsoap health checks (admin diagnostics)
   upload/multer.js      Multipart upload handling (memory storage)
 uploads/               MP3s and cover images (gitignored, created at deploy)
 liquidsoap/            Generated radio.liq + per-playlist .m3u files (gitignored)

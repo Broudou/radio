@@ -6,6 +6,7 @@
   import TrackList from '../../lib/components/admin/TrackList.svelte';
   import PlaylistList from '../../lib/components/admin/PlaylistList.svelte';
   import ScheduleList from '../../lib/components/admin/ScheduleList.svelte';
+  import SystemStatus from '../../lib/components/admin/SystemStatus.svelte';
 
   onMount(() => {
     if (!authState.checked) checkSession();
@@ -16,6 +17,7 @@
     { id: 'tracks', label: 'Tracks', component: TrackList },
     { id: 'playlists', label: 'Playlists', component: PlaylistList },
     { id: 'schedule', label: 'Schedule', component: ScheduleList },
+    { id: 'system-status', label: 'System status', component: SystemStatus },
   ];
   let activeTab = $state('dashboard');
   let ActiveComponent = $derived(tabs.find((t) => t.id === activeTab).component);

@@ -204,4 +204,25 @@ export async function regenerateAndRestartIfConfigured() {
   }
 }
 
+/**
+ * Non-throwing version of assertDefaultPlaylistValid(), for status/diagnostic
+ * reporting where "no valid default playlist" is a fact to display, not an
+ * error to propagate.
+ */
+export async function getDefaultPlaylistStatus() {
+  try {
+    await assertDefaultPlaylistValid();
+    return { valid: true, reason: null };
+  } catch (err) {
+    if (err instanceof DefaultPlaylistInvalidError) {
+      return { valid: false, reason: err.message };
+    }
+    throw err;
+  }
+}
+
+export function getRadioLiqPath() {
+  return RADIO_LIQ_PATH;
+}
+
 export { DefaultPlaylistInvalidError };
