@@ -1,0 +1,30 @@
+{
+  "name": "radio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Self-hosted web radio platform (Icecast + Liquidsoap, Express + MongoDB backend, Svelte admin/public frontend)",
+  "scripts": {
+    "dev": "node server.js",
+    "dev:watch": "node --watch server.js",
+    "build": "npm --prefix web install && npm --prefix web run build",
+    "start": "node server.js",
+    "seed-admin": "node scripts/seed-admin.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie": "^2.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "file-type": "^22.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "multer": "^2.2.0",
+    "music-metadata": "^11.14.0",
+    "uuid": "^14.0.1"
+  }
+}

@@ -1,0 +1,13 @@
+node_modules/
+.env
+uploads/tracks/*
+uploads/covers/*
+!uploads/tracks/.gitkeep
+!uploads/covers/.gitkeep
+liquidsoap/radio.liq
+liquidsoap/playlists/*.m3u
+!liquidsoap/playlists/.gitkeep
+web/dist/
+web/node_modules/
+*.log
+.DS_Store
