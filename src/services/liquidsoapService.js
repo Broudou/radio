@@ -105,7 +105,9 @@ function buildRadioLiq({ playlists, scheduleEntries, defaultPlaylistId }) {
     const startTs = Math.floor(new Date(entry.startAt).getTime() / 1000);
     const endTs = Math.floor(new Date(entry.endAt).getTime() / 1000);
     const varName = sourceVarFor(entry.playlist);
-    lines.push(`    (fun () -> (time() >= ${startTs} and time() <= ${endTs}), ${varName}),`);
+    // time() returns a float — emit explicit float literals (Liquidsoap's type
+    // inference rejects bare ints here, e.g. "1784095200" vs "1784095200.0").
+    lines.push(`    (fun () -> (time() >= ${startTs}.0 and time() <= ${endTs}.0), ${varName}),`);
   }
   lines.push(`    (fun () -> true, ${defaultVarName})`);
   lines.push('  ]');

@@ -121,6 +121,7 @@ Type=simple
 User=<deployuser>
 Group=<deployuser>
 WorkingDirectory=/opt/radio/liquidsoap
+LogsDirectory=liquidsoap
 ExecStart=/usr/bin/liquidsoap /opt/radio/liquidsoap/radio.liq
 Restart=on-failure
 RestartSec=5
@@ -129,6 +130,16 @@ LimitNOFILE=65536
 [Install]
 WantedBy=multi-user.target
 ```
+
+`radio.liq` is generated with `log.file.path` set to `/var/log/liquidsoap/radio.log`
+(see `buildRadioLiq()` in `src/services/liquidsoapService.js`). The stock
+`apt install liquidsoap` package creates `/var/log/liquidsoap` owned by its
+own `liquidsoap` system user — not the `<deployuser>` this unit runs as — so
+without `LogsDirectory=liquidsoap` above, Liquidsoap fails to start with a
+permission error the moment it tries to open its log file, and
+`systemctl status` just shows `inactive`/`failed` with no obvious cause.
+`LogsDirectory=` makes systemd create `/var/log/liquidsoap` owned by
+`User`/`Group` before every start, so this can't happen.
 
 ```bash
 sudo systemctl daemon-reload
