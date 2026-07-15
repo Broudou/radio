@@ -12,6 +12,7 @@ import playlistsRoutes from './src/routes/playlists.routes.js';
 import scheduleRoutes from './src/routes/schedule.routes.js';
 import statusRoutes from './src/routes/status.routes.js';
 import systemStatusRoutes from './src/routes/systemStatus.routes.js';
+import streamMetaRoutes from './src/routes/streamMeta.routes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -33,6 +34,7 @@ app.use('/api/playlists', requireAuth, playlistsRoutes);
 app.use('/api/schedule', requireAuth, scheduleRoutes);
 app.use('/api/status', statusRoutes);
 app.use('/api/system-status', requireAuth, systemStatusRoutes);
+app.use('/api/stream-meta', requireAuth, streamMetaRoutes);
 
 // The Svelte SPA runs its router in hash mode, so the server never needs an
 // SPA-fallback route — only `/` is ever requested for HTML.

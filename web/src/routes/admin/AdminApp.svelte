@@ -7,6 +7,7 @@
   import PlaylistList from '../../lib/components/admin/PlaylistList.svelte';
   import ScheduleList from '../../lib/components/admin/ScheduleList.svelte';
   import SystemStatus from '../../lib/components/admin/SystemStatus.svelte';
+  import StreamMeta from '../../lib/components/admin/StreamMeta.svelte';
 
   onMount(() => {
     if (!authState.checked) checkSession();
@@ -18,6 +19,7 @@
     { id: 'playlists', label: 'Playlists', component: PlaylistList },
     { id: 'schedule', label: 'Schedule', component: ScheduleList },
     { id: 'system-status', label: 'System status', component: SystemStatus },
+    { id: 'stream-meta', label: 'Stream metadata', component: StreamMeta },
   ];
   let activeTab = $state('dashboard');
   let ActiveComponent = $derived(tabs.find((t) => t.id === activeTab).component);
